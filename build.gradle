@@ -1,0 +1,46 @@
+plugins {
+    id 'org.gradle.playframework' version '0.10'
+    id 'java'
+    id 'idea'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+def PlayVersion = "2.6.25"
+def ScalaVersion = "2.12"
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        name "lightbend-maven-release"
+        url "https://repo.lightbend.com/lightbend/maven-releases"
+    }
+    ivy {
+        name "lightbend-ivy-release"
+        url "https://repo.lightbend.com/lightbend/ivy-releases"
+        layout "ivy"
+    }
+}
+
+play {
+    platform {
+        playVersion = "2.6.25"
+        scalaVersion = "2.12"
+        javaVersion = JavaVersion.VERSION_1_8
+    }
+    injectedRoutesGenerator = true
+    if (System.getProperty("debug")) {
+        def runPlayTask = tasks.findByName('runPlay')
+        runPlayTask.forkOptions.jvmArgs = ['-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005']
+    }
+}
+
+dependencies {
+    implementation "commons-lang:commons-lang:2.6"
+    implementation "com.typesafe.play:play-guice_$ScalaVersion:$PlayVersion"
+    implementation "com.typesafe.play:play-ahc-ws_2.12:$PlayVersion"
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+    testImplementation "org.scalatestplus.play:scalatestplus-play_$ScalaVersion:3.1.2"
+}
